@@ -1000,7 +1000,7 @@
     };
   };
 
-  tim1_sleep_pins_mx: pwm1-sleep-0 {
+  tim1_pwm_sleep_pins_mx: pwm1-sleep-0 {
 		pins {
 			pinmux = <STM32_PINMUX('E', 12, ANALOG)>; /* TIM1_CH3N */
 		};
