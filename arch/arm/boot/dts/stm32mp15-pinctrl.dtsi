@@ -1002,7 +1002,7 @@
 
   tim1_pwm_sleep_pins_mx: tim1-sleep-0 {
 		pins {
-			pinmux = <STM32_PINMUX('E', 12, AF1)>, /* TIM1_CH3N */
+			pinmux = <STM32_PINMUX('E', 12, AF1)>; /* TIM1_CH3N */
 		};
 	};
 
