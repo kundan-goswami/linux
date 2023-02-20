@@ -152,7 +152,7 @@
 
 /*timer pwm1 */
 &timer1{
-  status = "okay"
+  status = "okay";
   /delete-property/dmas;
   /delete-property/dma-names;
   pwm{
