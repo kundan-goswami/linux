@@ -991,6 +991,20 @@
 				 <STM32_PINMUX('B', 5, ANALOG)>; /* CAN2_RX */
 		};
 	};
+  tim1_pwm_pins_mx: tim1_pwm_mx-0 {
+    pins{
+      pinmux = <STM32_PINMUX('E', 12, AF1)>; /*TIM1_CH3N */
+      bias-disable;
+      drive-push-pull;
+      slew-rate = <0>;
+    };
+  };
+
+  tim1_pwm_sleep_pins_mx: tim1-sleep-0 {
+		pins {
+			pinmux = <STM32_PINMUX('E', 12, AF1)>, /* TIM1_CH3N */
+		};
+	};
 
 	pwm1_pins_a: pwm1-0 {
 		pins {

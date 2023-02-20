@@ -149,3 +149,17 @@
 		vddio-supply = <&v3v3>;
 	};
 };
+
+/*timer pwm1 */
+&timer1{
+  status = "okay"
+  /delete-property/dmas;
+  /delete-property/dma-names;
+  pwm{
+    pinctrl-names = "default", "sleep";
+    pinctrl-0     = <&tim1_pwm_pins_mx>;
+    pinctrl-1     = <&tim1_pwm_sleep_pins_mx>;
+    status        = "okay";
+  };
+};
+
