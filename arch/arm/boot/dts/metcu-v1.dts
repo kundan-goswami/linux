@@ -14,7 +14,7 @@
 #include <dt-bindings/rtc/rtc-stm32.h>
 
 / {
-	model = "STMicroelectronics STM32MP157F-DK2 Discovery Board";
+	model = "STMicroelectronics STM32MP157F-DK2 Discovery Board; METCU Adapt";
 	compatible = "st,stm32mp157f-dk2", "st,stm32mp157";
 
 	aliases {
@@ -33,12 +33,35 @@
 			status = "disabled";
 		};
 	};
+	
+	clocks {
+		/* 16MHz external crystal oscillator */
+		clk16m: mcp251x_osc {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <16000000>;
+		};
+	};
 
 	wifi_pwrseq: wifi-pwrseq {
 		compatible = "mmc-pwrseq-simple";
 		reset-gpios = <&gpioh 4 GPIO_ACTIVE_LOW>;
 	};
 };
+
+&m_can1 {
+	pinctrl-names = "default", "sleep";         /* configure pinctrl modes for m_can1 */
+	pinctrl-0 = <&m_can1_pins_b>;               /* configure m_can1_pins_b as default pinctrl configuration for m_can1 */
+	pinctrl-1 = <&m_can1_sleep_pins_b>;         /* configure m_can1_sleep_pins_b as sleep pinctrl configuration for m_can1 */
+	status = "okay";                            /* enable m_can1 */ 
+}; 
+
+&m_can2 {
+	pinctrl-names = "default", "sleep";         /* configure pinctrl modes for m_can2 */
+	pinctrl-0 = <&m_can2_pins_b>;               /* configure m_can2_pins_a as default pinctrl configuration for m_can2 */
+	pinctrl-1 = <&m_can2_sleep_pins_b>;         /* configure m_can2_sleep_pins_a as sleep pinctrl configuration for m_can2 */
+	status = "okay";                            /* enable m_can2 */ 
+}; 
 
 &cryp1 {
 	status = "okay";
@@ -79,18 +102,56 @@
 };
 
 &i2c1 {
-	touchscreen@38 {
-		compatible = "focaltech,ft6236";
-		reg = <0x38>;
-		interrupts = <2 2>;
-		interrupt-parent = <&gpiof>;
-		interrupt-controller;
-		touchscreen-size-x = <480>;
-		touchscreen-size-y = <800>;
-		panel = <&panel_otm8009a>;
-		vcc-supply = <&v3v3>;
-		iovcc-supply = <&v3v3>;
-		status = "okay";
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&i2c1_pins_a>;
+	pinctrl-1 = <&i2c1_sleep_pins_a>;
+	i2c-scl-rising-time-ns = <100>;
+	i2c-scl-falling-time-ns = <7>;
+	clock-frequency = <400000>;
+	status = "okay";
+};
+
+&i2c2 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&i2c2_pins_d>;
+	pinctrl-1 = <&i2c2_sleep_pins_d>;
+	i2c-scl-rising-time-ns = <100>;
+	i2c-scl-falling-time-ns = <7>;
+	clock-frequency = <400000>;
+	status = "okay";
+};
+
+&spi5 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&spi5_pins_a>;
+	pinctrl-1 = <&spi5_sleep_pins_a>;
+	cs-gpios = <&gpiof 6 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>, <&gpiof 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+	status = "okay";
+	
+	can2: can@0 {
+		compatible = "microchip,mcp2515";
+		reg = <0>;
+		clocks = <&clk16m>;
+		interrupt-parent = <&gpiog>;
+		interrupts = <8 IRQ_TYPE_LEVEL_LOW>;
+		vdd-supply = <&v3v3>; //SPECIFIC TO DEV BOARD AND ST PMIC
+		xceiver-supply = <&vin>;  //SPECIFIC TO DEV BOARD AND ST PMIC
+		gpio-controller;
+		#gpio-cells = <2>;
+		spi-max-frequency = <8000000>;
+	};
+	
+	can3: can@1 {
+		compatible = "microchip,mcp2515";
+		reg = <1>;
+		clocks = <&clk16m>;
+		interrupt-parent = <&gpiod>;
+		interrupts = <13 IRQ_TYPE_LEVEL_LOW>;
+		vdd-supply = <&v3v3>; //SPECIFIC TO DEV BOARD AND ST PMIC
+		xceiver-supply = <&vin>;  //SPECIFIC TO DEV BOARD AND ST PMIC
+		gpio-controller;
+		#gpio-cells = <2>;
+		spi-max-frequency = <8000000>;
 	};
 };
 
